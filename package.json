@@ -1,0 +1,11 @@
+{
+  "name": "shop-nodejs-aws-serverless",
+  "version": "1.0.0",
+  "description": "Backend for E-Commerce application (Shop) created with NodeJS, AWS Cloud and Serverless architecture and Serverless framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
