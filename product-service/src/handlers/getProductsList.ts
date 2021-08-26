@@ -1,6 +1,6 @@
-import { ProductServiceInterface } from "./services/products";
-import { winstonLogger } from "./utils/winstonLogger";
-import { errorResponse, successResponse } from "./utils/apiResponseBuilder";
+import { ProductServiceInterface } from "../services/products";
+import { winstonLogger } from "../utils/winstonLogger";
+import { errorResponse, successResponse } from "../utils/apiResponseBuilder";
 
 export const getProductsListHandler = (productService: ProductServiceInterface) => async (event, _context) => {
     try {
