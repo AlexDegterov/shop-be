@@ -7,7 +7,7 @@ class InMemoryProductService implements ProductServiceInterface {
         return Promise.resolve(products.find( product => product.id === id ));
     }
 
-    getAllProducts() {
+    getProductsList() {
         return Promise.resolve(products);
     }
 

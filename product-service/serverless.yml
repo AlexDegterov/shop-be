@@ -36,8 +36,8 @@ functions:
             parameters:
               paths:
                 productId: true
-  getAllProducts:
-    handler: handler.getAllProducts
+  getProductsList:
+    handler: handler.getProductsList
     events:
       - http:
           path: products

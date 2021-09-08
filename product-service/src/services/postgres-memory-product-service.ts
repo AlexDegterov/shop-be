@@ -18,7 +18,7 @@ class PostgresProductService implements ProductServiceInterface {
         return result.rows[0] ? result.rows[0] : null;
     }
 
-    async getAllProducts(): Promise<ProductInterface[]> {
+    async getProductsList(): Promise<ProductInterface[]> {
         const query = {
             text: `SELECT * FROM ${this.tableName}`,
         } as QueryConfig;

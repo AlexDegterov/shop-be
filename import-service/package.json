@@ -5,10 +5,10 @@
   "main": "handler.js",
   "scripts": {
     "package-build": "sls package",
-    "deploy:dev": "sls deploy --stage dev",
-    "deploy:prod": "sls deploy --stage prod",
-    "remove:dev-stack": "sls remove --stage dev --region us-east-1",
-    "remove:prod-stack": "sls remove --stage prod --region us-east-1"
+    "deploy:dev": "sls deploy --aws-profile rs --stage dev",
+    "deploy:prod": "sls deploy --aws-profile rs --stage prod",
+    "remove:dev-stack": "sls remove --aws-profile rs --stage dev --region eu-west-1",
+    "remove:prod-stack": "sls remove --aws-profile rs --stage prod --region eu-west-1"
   },
   "devDependencies": {
     "@aws-sdk/types": "^3.15.0",
