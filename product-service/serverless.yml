@@ -1,6 +1,6 @@
 service: product-service
 frameworkVersion: '2'
-variablesResolutionMode: 20210219
+variablesResolutionMode: 20210326
 
 provider:
   name: aws
@@ -9,11 +9,11 @@ provider:
   region: eu-west-1
   environment:
     ENV_STAGE: ${opt:stage, 'dev'}
-    PGHOST: ${self:custom.dotenvVars.PGHOST, env:PGHOST, ''}
-    PGUSER: ${self:custom.dotenvVars.PGUSER, env:PGUSER, ''}
-    PGDATABASE: ${self:custom.dotenvVars.PGDATABASE, env:PGDATABASE, ''}
-    PGPASSWORD: ${self:custom.dotenvVars.PGPASSWORD, env:PGPASSWORD, ''}
-    PGPORT: ${self:custom.dotenvVars.PGPORT, env:PGPORT, ''}
+    PGHOST: ${self:custom.webpack.dotenvVars.PGHOST, env:PGHOST, ''}
+    PGUSER: ${self:custom.webpack.dotenvVars.PGUSER, env:PGUSER, ''}
+    PGDATABASE: ${self:custom.webpack.dotenvVars.PGDATABASE, env:PGDATABASE, ''}
+    PGPASSWORD: ${self:custom.webpack.dotenvVars.PGPASSWORD, env:PGPASSWORD, ''}
+    PGPORT: ${self:custom.webpack.dotenvVars.PGPORT, env:PGPORT, ''}
 
 plugins:
   - serverless-webpack

@@ -1,0 +1,13 @@
+-- INSERT INTO products (title, description, price, logo) values 
+-- ( 'Кабель RG-6 6U 100м', 'RG-6 это коаксиальный кабель, передающий высокочастотные сигналы в разных электронных устройствах.', 50, 'http: //elektrotexnika.by/upload/iblock/eb9/eimq7q0ws0im4iz5eznef9y7tjg6d0yk.jpg' ),
+-- ( 'Провод ПВ 3-1,5 белый', 'Провод ПВ-3 (ПуГВ) - установочный провод с медными жилами и изоляцией из ПВХ пластиката, 3–го  класса гибкости.', 80, 'http: //elektrotexnika.by/upload/resize_cache/iblock/c76/90_75_2/c5itq498wmdqno3jfxdf6n7kndrb584f.jpg' ),
+-- ( 'Провод ПВ 3-2,5 белый', 'Провод ПВ-3 (ПуГВ) - установочный провод с медными жилами и изоляцией из ПВХ пластиката, 3–го  класса гибкости.', 100, 'http: //elektrotexnika.by/upload/resize_cache/iblock/c76/90_75_2/c5itq498wmdqno3jfxdf6n7kndrb584f.jpg' ),
+-- ( 'Провод ПВ 3-4,0 белый', 'Провод ПВ-3 (ПуГВ) - установочный провод с медными жилами и изоляцией из ПВХ пластиката, 3–го  класса гибкости.', 150, 'http: //elektrotexnika.by/upload/resize_cache/iblock/c76/90_75_2/c5itq498wmdqno3jfxdf6n7kndrb584f.jpg' ),
+-- ( 'Провод ПВ 3-6,0 жел/зел', 'Провод ПВ-3 (ПуГВ) - установочный провод с медными жилами и изоляцией из ПВХ пластиката, 3–го класса гибкости.', 240, 'http: //elektrotexnika.by/upload/iblock/a08/v05lw23dox02norn4g5gje833e7jkjqc.jpg');
+
+-- INSERT INTO stocks (product_id, count) values
+-- ( '429b4c59-efd0-4c94-8097-a9b72675cc89', 1870),
+-- ( '6ef42803-e156-4f67-8bef-f37b548b972d', 510),
+-- ( 'd9c2cb68-f6e5-4548-8987-4162ef4562c8', 910),
+-- ( 'bccc373f-4322-44b5-885c-eee17cad07a5', 190),
+-- ( '742be17b-07a2-4a29-9575-e390834e310a', 2150);

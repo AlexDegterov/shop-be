@@ -5,10 +5,10 @@
   "main": "handler.js",
   "scripts": {
     "package-build": "sls package",
-    "deploy:dev": "sls deploy --aws-profile rs --stage dev",
-    "deploy:prod": "sls deploy --aws-profile rs --stage prod",
-    "remove:dev-stack": "sls remove --aws-profile rs --stage dev --region eu-west-1",
-    "remove:prod-stack": "sls remove --aws-profile rs --stage prod --region eu-west-1"
+    "deploy:dev": "serverless deploy --aws-profile rs --stage dev",
+    "deploy:prod": "serverless deploy --aws-profile rs --stage prod",
+    "remove:dev-stack": "serverless remove --aws-profile rs --stage dev --region eu-west-1",
+    "remove:prod-stack": "serverless remove --aws-profile rs --stage prod --region eu-west-1"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.73",
@@ -16,7 +16,6 @@
     "@types/pg": "^7.14.11",
     "@types/serverless": "^1.78.23",
     "@types/uuid": "^8.3.0",
-    "dotenv": "^8.6.0",
     "fork-ts-checker-webpack-plugin": "^3.0.1",
     "serverless-webpack": "^5.4.0",
     "ts-loader": "^5.3.3",
@@ -28,6 +27,7 @@
   "author": "JSCC",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^8.6.0",
     "pg": "^8.6.0",
     "uuid": "^8.3.2",
     "winston": "^3.3.3"
