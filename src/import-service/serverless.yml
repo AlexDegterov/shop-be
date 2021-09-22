@@ -1,6 +1,6 @@
 service: import-service
 frameworkVersion: '2'
-variablesResolutionMode: 20210219
+variablesResolutionMode: 20210326
 
 provider:
   name: aws
@@ -12,12 +12,12 @@ provider:
     - Effect: "Allow"
       Action: "s3:ListBucket"
       Resource:
-        - "arn:aws:s3:::node-in-aws-cloud-catalogs"
+        - "arn:aws:s3:::aws-shop-files"
     - Effect: "Allow"
       Action:
         - "s3:*"
       Resource:
-        - "arn:aws:s3:::node-in-aws-cloud-catalogs/*"
+        - "arn:aws:s3:::aws-shop-files/*"
 
 plugins:
   - serverless-webpack
