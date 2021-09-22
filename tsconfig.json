@@ -13,5 +13,5 @@
     "outDir": "lib",
     "resolveJsonModule": true
   },
-  "include": ["./**/*.ts", "product-service/configs.js", "product-service/configs.js"]
+  "include": ["./**/*.ts", "src/product-service/configs.js", "src/product-service/configs.js"]
 }
