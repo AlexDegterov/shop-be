@@ -1,7 +1,7 @@
 import csv from 'csv-parser';
 const BUCKET = process.env.BUCKET;
 
-export const importFileParser = ({
+export const importFileParserHandler = ({
     s3,
     logger,
 }) => async (event) => {

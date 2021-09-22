@@ -4,11 +4,11 @@ import { winstonLogger as logger } from './src/utils/winstonLogger';
 
 const s3 = new AWS.S3({ region: 'eu-west-1' });
 
-export const getProductById = handlers.importFileParser({
+export const importFileParser = handlers.importFileParserHandler({
     s3,
     logger,
 });
 
-export const getProductsList = handlers.importProductsFile({
+export const importProductsFile = handlers.importProductsFileHandler({
     s3,
 });

@@ -7,6 +7,8 @@ provider:
   runtime: nodejs14.x
   stage: ${opt:stage, 'dev'}
   region: eu-west-1
+  environment:
+    BUCKET: ${self:custom.webpack.dotenvVars.BUCKET, env:BUCKET, ''}
 
   iamRoleStatements:
     - Effect: "Allow"
@@ -43,7 +45,10 @@ functions:
 
   importFileParser:
     handler: handler.importFileParser
+    events:
       - s3:
-          bucket: uploaded
+          bucket: aws-shop-files
           event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded
           existing: true
