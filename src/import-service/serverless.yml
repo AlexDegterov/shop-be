@@ -50,5 +50,5 @@ functions:
           bucket: aws-shop-files
           event: s3:ObjectCreated:*
           rules:
-            - prefix: uploaded
+            - prefix: uploaded/
           existing: true
