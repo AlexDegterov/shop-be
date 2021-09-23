@@ -5,7 +5,7 @@
   "main": "handler.js",
   "scripts": {
     "package-build": "sls package",
-    "deploy:dev": "sls deploy --stage dev",
+    "deploy:dev": "sls deploy --aws-profile rs --stage dev",
     "deploy:prod": "sls deploy --aws-profile rs --stage prod",
     "remove:dev-stack": "sls remove --aws-profile rs --stage dev --region eu-west-1",
     "remove:prod-stack": "sls remove --aws-profile rs --stage prod --region eu-west-1"
