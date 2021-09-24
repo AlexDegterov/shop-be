@@ -1,30 +1,46 @@
 import csv from 'csv-parser';
-const BUCKET = process.env.BUCKET;
+import { winstonLogger } from "./utils/winstonLogger";
 
 export const importFileParserHandler = ({
-    s3,
-    logger,
+    s3
 }) => async (event) => {
-    event.Records.forEach(record => {        
-        const s3Stream = s3.getObject({
+    winstonLogger.logRequest(`Start importFileParserHandler`);
+    // winstonLogger.logRequest(`event.Records: ${JSON.stringify(event.Records)}`);
+
+    event.Records.forEach(record => {
+        const BUCKET = record.s3.bucket.name;
+        const KEY = record.s3.object.key;
+
+        const s3ReadStream = s3.getObject({
             Bucket: BUCKET,
-            Key: record.s3.object.key
+            Key: KEY
         }).createReadStream();
 
-        s3Stream.pipe(csv())
-            .on('data', (data) => {
-                logger.log(data);
+        winstonLogger.logRequest(`Start s3ReadStream`);
+        s3ReadStream
+            .pipe(csv())
+            .on('chunk', (chunk) => {
+                winstonLogger.logRequest(`product parsed from csv: ${chunk}`);
+            })
+            .on('error', err => {
+                winstonLogger.logError(`Failed: ${err}`);
             })
             .on('end', async () => {
-                logger.log(`Copy from ${BUCKET}/${record.s3.object.key}`);
-
+                winstonLogger.logRequest(`Copy from ${BUCKET}/${KEY}`);
                 await s3.copyObject({
                     Bucket: BUCKET,
-                    CopySource: `${BUCKET}/${record.s3.object.key}`,
-                    Key: record.s3.object.key.replace('uploaded', 'parsed')
+                    CopySource: `${BUCKET}/${KEY}`,
+                    Key: KEY.replace('uploaded', 'parsed')
                 }).promise();
+                console.log(`Copied`)
 
-                logger.log(`Copied into ${BUCKET}/${record.s3.object.key.replace('uploaded', 'parsed')}`);
+                await s3.deleteObject({
+                    Bucket: BUCKET,
+                    Key: KEY
+                }).promise();
+                console.log('File deleted');
+
+                winstonLogger.logRequest(`Copied into ${BUCKET}/${KEY.replace('uploaded', 'parsed')}`);
             });
     });
 }
