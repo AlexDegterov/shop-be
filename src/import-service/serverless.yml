@@ -1,5 +1,5 @@
 service: import-service
-frameworkVersion: '2'
+frameworkVersion: "2"
 variablesResolutionMode: 20210326
 
 provider:
@@ -9,24 +9,34 @@ provider:
   region: eu-west-1
   environment:
     BUCKET: ${self:custom.webpack.dotenvVars.BUCKET, env:BUCKET, ''}
+    SQS_QUEUE: ${self:custom.webpack.dotenvVars.SQS_QUEUE, env:SQS_QUEUE, ''}
+    SNS_TOPIC: ${self:custom.webpack.dotenvVars.SNS_TOPIC, env:SNS_TOPIC, ''}
+    SNS_EMAIL: ${self:custom.webpack.dotenvVars.SNS_EMAIL, env:SNS_EMAIL, ''}
+    SQS_URL:
+      Ref: SQSQueue
 
   iamRoleStatements:
     - Effect: "Allow"
       Action: "s3:ListBucket"
       Resource:
-        - "arn:aws:s3:::aws-shop-files"
+        - arn:aws:s3:::aws-shop-files
     - Effect: "Allow"
       Action:
         - "s3:*"
       Resource:
         - "arn:aws:s3:::aws-shop-files/*"
+    - Effect: "Allow"
+      Action:
+        - "sqs:*"
+      Resource:
+        - Fn::GetAtt: [ SQSQueue, Arn ]
 
 plugins:
   - serverless-webpack
 
 custom:
   webpack:
-    webpackConfig: 'webpack.config.js'
+    webpackConfig: "webpack.config.js"
     includeModules: true
     dotenvVars: ${file(configs.js)}
 
@@ -52,29 +62,33 @@ functions:
           rules:
             - prefix: uploaded/
           existing: true
-  
+
   catalogBatchProcess:
     handler: handler.catalogBatchProcess
     events:
       - sqs:
           batchSize: 5
-          arn: Fn::GetAtt 
-            'SQSQueue', 'Arn'
+          arn:
+            Fn::GetAtt:
+              - SQSQueue
+              - Arn
 
-  resources:
-    Resources: 
-      SQSQueue:
-        Type: AWS::SQS::Queue
-        Properties: 
-          QueueName: ${env:SQS_QUEUE}
-      SNSTopic: 
-        Type: AWS::SNS::Topic
-        Properties: 
-          TopicName: ${env:SNS_TOPIC}
-      SNSSubscription:
-        Type: AWS::SNS::Subscription
-        Properties:
-          Endpoint: ${env:SNS_ENDPOINT_EMAIL}
-          Protocol: email
-          TopicArn:
-            Ref: SNSTopic
+resources:
+  Resources:
+    SQSQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.webpack.dotenvVars.SQS_QUEUE}
+
+    SNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:custom.webpack.dotenvVars.SNS_TOPIC}
+
+    SNSSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: ${self:custom.webpack.dotenvVars.SNS_EMAIL}
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic

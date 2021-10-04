@@ -10,3 +10,5 @@ export const importFileParser = handlers.importFileParserHandler({
 export const importProductsFile = handlers.importProductsFileHandler({
     s3,
 });
+
+export const catalogBatchProcess = handlers.catalogBatchProcessHandler();
