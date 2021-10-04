@@ -6,6 +6,9 @@ node_modules
 
 # Serverless directories
 */.serverless
+src/*/.serverless
 
 # Webpack directories
 */.webpack
+
+src/*/.env.local

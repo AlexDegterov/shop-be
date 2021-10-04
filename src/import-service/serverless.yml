@@ -1,23 +1,25 @@
 service: import-service
 frameworkVersion: '2'
-variablesResolutionMode: 20210219
+variablesResolutionMode: 20210326
 
 provider:
   name: aws
   runtime: nodejs14.x
   stage: ${opt:stage, 'dev'}
   region: eu-west-1
+  environment:
+    BUCKET: ${self:custom.webpack.dotenvVars.BUCKET, env:BUCKET, ''}
 
   iamRoleStatements:
     - Effect: "Allow"
       Action: "s3:ListBucket"
       Resource:
-        - "arn:aws:s3:::node-in-aws-cloud-catalogs"
+        - "arn:aws:s3:::aws-shop-files"
     - Effect: "Allow"
       Action:
         - "s3:*"
       Resource:
-        - "arn:aws:s3:::node-in-aws-cloud-catalogs/*"
+        - "arn:aws:s3:::aws-shop-files/*"
 
 plugins:
   - serverless-webpack
@@ -43,7 +45,10 @@ functions:
 
   importFileParser:
     handler: handler.importFileParser
+    events:
       - s3:
-          bucket: uploaded
+          bucket: aws-shop-files
           event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
           existing: true

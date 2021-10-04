@@ -1,7 +1,7 @@
 const BUCKET = process.env.BUCKET;
 import { errorResponse, successResponse } from "./utils/apiResponseBuilder";
 
-export const importProductsFile = ({
+export const importProductsFileHandler = ({
     s3,
 }) => async (event) => {
     try {
