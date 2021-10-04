@@ -52,3 +52,29 @@ functions:
           rules:
             - prefix: uploaded/
           existing: true
+  
+  catalogBatchProcess:
+    handler: handler.catalogBatchProcess
+    events:
+      - sqs:
+          batchSize: 5
+          arn: Fn::GetAtt 
+            'SQSQueue', 'Arn'
+
+  resources:
+    Resources: 
+      SQSQueue:
+        Type: AWS::SQS::Queue
+        Properties: 
+          QueueName: ${env:SQS_QUEUE}
+      SNSTopic: 
+        Type: AWS::SNS::Topic
+        Properties: 
+          TopicName: ${env:SNS_TOPIC}
+      SNSSubscription:
+        Type: AWS::SNS::Subscription
+        Properties:
+          Endpoint: ${env:SNS_ENDPOINT_EMAIL}
+          Protocol: email
+          TopicArn:
+            Ref: SNSTopic
