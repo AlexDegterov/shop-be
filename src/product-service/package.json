@@ -27,6 +27,7 @@
   "author": "JSCC",
   "license": "MIT",
   "dependencies": {
+    "aws-sdk": "^2.1000.0",
     "dotenv": "^8.6.0",
     "pg": "^8.6.0",
     "uuid": "^8.3.2",
