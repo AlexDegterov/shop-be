@@ -1,46 +1,69 @@
 import csv from 'csv-parser';
-import { winstonLogger } from "./utils/winstonLogger";
+import stream from 'stream';
+import util from 'util';
+
+const BUCKET = process.env.BUCKET;
+const finished = util.promisify(stream.finished);
 
 export const importFileParserHandler = ({
-    s3
+    s3,
+    sqs,
+    logger
 }) => async (event) => {
-    winstonLogger.logRequest(`Start importFileParserHandler`);
-    // winstonLogger.logRequest(`event.Records: ${JSON.stringify(event.Records)}`);
+    logger.logRequest(`Start importFileParserHandler`);
 
-    event.Records.forEach(record => {
-        const BUCKET = record.s3.bucket.name;
+    for (const record of event.Records) {
         const KEY = record.s3.object.key;
+        const results = [];
 
         const s3ReadStream = s3.getObject({
             Bucket: BUCKET,
             Key: KEY
         }).createReadStream();
 
-        winstonLogger.logRequest(`Start s3ReadStream`);
-        s3ReadStream
-            .pipe(csv())
-            .on('chunk', (chunk) => {
-                winstonLogger.logRequest(`product parsed from csv: ${chunk}`);
-            })
-            .on('error', err => {
-                winstonLogger.logError(`Failed: ${err}`);
-            })
-            .on('end', async () => {
-                winstonLogger.logRequest(`Copy from ${BUCKET}/${KEY}`);
-                await s3.copyObject({
-                    Bucket: BUCKET,
-                    CopySource: `${BUCKET}/${KEY}`,
-                    Key: KEY.replace('uploaded', 'parsed')
-                }).promise();
-                console.log(`Copied`)
+        logger.logRequest(`Start s3ReadStream`);
+        await finished(
+            s3ReadStream
+                .pipe(csv())
+                .on('data', (data) => {
+                    logger.logRequest(`product parsed from csv: ${data}`);
+                    results.push(data);
+                })
+                .on('error', err => {
+                    logger.logError(`Failed: ${err}`);
+                })
+                .on('end', async () => {
+                    logger.logRequest(`Copy from ${BUCKET}/${KEY}`);
 
-                await s3.deleteObject({
-                    Bucket: BUCKET,
-                    Key: KEY
-                }).promise();
-                console.log('File deleted');
+                    await s3.copyObject({
+                        Bucket: BUCKET,
+                        CopySource: `${BUCKET}/${KEY}`,
+                        Key: KEY.replace('uploaded', 'parsed')
+                    }).promise();
 
-                winstonLogger.logRequest(`Copied into ${BUCKET}/${KEY.replace('uploaded', 'parsed')}`);
-            });
-    });
+                    console.log(`Copied`)
+
+                    await s3.deleteObject({
+                        Bucket: BUCKET,
+                        Key: KEY
+                    }).promise();
+                    console.log('File deleted');
+
+                    logger.logRequest(`Copied into ${BUCKET}/${KEY.replace('uploaded', 'parsed')}`);
+                })
+        )
+
+        results.map(item => {
+            sqs.sendMessage({
+              QueueUrl: process.env.SQS_URL,
+              MessageBody: JSON.stringify(item),
+            }, (error, data) => {
+              if (error) {
+                logger.log(`Error for send to SQS: ${error}`);
+              } else {
+                logger.log(`Message was sent to SQS: ${data}`);
+              }
+            })
+          })
+    };
 }
