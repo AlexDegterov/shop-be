@@ -104,7 +104,9 @@ resources:
     #     TopicArn:
     #       Ref: createProductTopic
 
-Outputs:
-  SQS_URL:
-    Value: 
-      Ref: catalogItemsQueue
+  Outputs:
+    SQS_URL:
+      Value: 
+        "Ref": catalogItemsQueue
+      Export:
+        Name: catalogItemsQueue-${self:custom.stage}
