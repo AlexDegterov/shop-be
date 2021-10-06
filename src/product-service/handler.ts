@@ -9,3 +9,4 @@ const productService = new PostgresProductService(databaseClient);
 export const getProductById = handlers.getProductByIdHandler(productService);
 export const getProductsList = handlers.getProductsListHandler(productService);
 export const createProduct = handlers.createProductHandler(productService);
+export const catalogBatchProcess = handlers.catalogBatchProcessHandler(productService);

@@ -4,7 +4,7 @@ import { winstonLogger } from '../utils/winstonLogger';
 
 const sns = new SNS();
 
-export const catalogBatchProcess =
+export const catalogBatchProcessHandler =
   (productService: ProductServiceInterface) => async (event, _context) => {
     winstonLogger.logRequest(`Incoming event: ${JSON.stringify(event)}`);
     try {

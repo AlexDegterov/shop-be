@@ -26,6 +26,10 @@ provider:
         - "sqs:*"
       Resource:
         - Fn::GetAtt: [ catalogItemsQueue, Arn ]
+    - Effect: Allow
+      Action: 'sns:*'
+      Resource:
+        Ref: createProductTopic
 
 plugins:
   - serverless-webpack
@@ -71,7 +75,9 @@ functions:
       - sqs:
           batchSize: 5
           arn:
-            Fn::GetAtt: [catalogItemsQueue, Arn] 
+            Fn::GetAtt:
+              - catalogItemsQueue
+              - Arn
 
 resources:
   Resources:
@@ -105,8 +111,8 @@ resources:
     #       Ref: createProductTopic
 
   Outputs:
-    SQS_URL:
+    SQSURL:
       Value: 
         "Ref": catalogItemsQueue
       Export:
-        Name: catalogItemsQueue-${self:custom.stage}
+        Name: catalogItemsQueue-${opt:stage, 'dev'}

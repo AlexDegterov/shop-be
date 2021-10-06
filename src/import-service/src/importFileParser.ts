@@ -26,9 +26,9 @@ export const importFileParserHandler = ({
             s3ReadStream
                 .pipe(csv())
                 .on('data', (data) => {
-                    logger.logRequest(`product parsed from csv: ${data}`);
+                    logger.logRequest(`product parsed from csv: ${JSON.stringify(data)}`);
                     results.push(data);
-                })
+                   })
                 .on('error', err => {
                     logger.logError(`Failed: ${err}`);
                 })
@@ -41,29 +41,29 @@ export const importFileParserHandler = ({
                         Key: KEY.replace('uploaded', 'parsed')
                     }).promise();
 
-                    console.log(`Copied`)
+                    logger.logRequest(`Copied to folder "parsed" to ${KEY.replace('uploaded', 'parsed')}`)
 
                     await s3.deleteObject({
                         Bucket: BUCKET,
                         Key: KEY
                     }).promise();
-                    console.log('File deleted');
-
+                    logger.logRequest('File deleted');
                     logger.logRequest(`Copied into ${BUCKET}/${KEY.replace('uploaded', 'parsed')}`);
                 })
         )
 
-        results.map(item => {
-            sqs.sendMessage({
-              QueueUrl: process.env.SQS_URL,
+        for (const item of results) {
+            logger.logRequest(`item: ${JSON.stringify(item)}`);
+            await sqs.sendMessage({
+              QueueUrl: process.env.SQSURL,
               MessageBody: JSON.stringify(item),
             }, (error, data) => {
               if (error) {
-                logger.log(`Error for send to SQS: ${error}`);
+                logger.logRequest(`Error for send to SQS: ${error}`);
               } else {
-                logger.log(`Message was sent to SQS: ${data}`);
+                logger.logRequest(`Message was sent to SQS: ${JSON.stringify(data)}`);
               }
-            })
-          })
+            }).promise();
+        }
     };
 }
