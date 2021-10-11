@@ -27,10 +27,11 @@ class PostgresProductService implements ProductServiceInterface {
         return result.rows ? result.rows : null;
     }
 
-    async create(product: Pick<ProductInterface, 'title' | 'description' | 'price' | 'logo' | 'count'>) {
+    async create(product: Pick<ProductInterface, 'title' | 'description' | 'price' | 'logo'>) {
+        let { title, description, price, logo } = product;
         const query = {
-            text: `INSERT INTO ${this.tableName}(title, description, price, logo, count) VALUES($1, $2, $3, $4, $5) RETURNING *`,
-            values: [product.title, product.description, product.price, product.logo, product.count],
+            text: `INSERT INTO ${this.tableName}(title, description, price, logo) VALUES($1, $2, $3, $4) RETURNING *`,
+            values: [title, description, price, logo],
         };
         const result = await this.databaseClient.query(query);
         return result.rows[0] ? result.rows[0] : null;

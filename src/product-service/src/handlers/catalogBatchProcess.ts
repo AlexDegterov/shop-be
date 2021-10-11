@@ -11,7 +11,7 @@ export const catalogBatchProcessHandler =
       for (const record of event.Records) {
         winstonLogger.logRequest(`Start processing record: ${record.body}`);
 
-        const product = await productService.create(event.body);
+        const product = await productService.create(JSON.parse(record.body));
 
         winstonLogger.logRequest(`Created product: ${JSON.stringify(product)}`);
 
@@ -30,7 +30,7 @@ export const catalogBatchProcessHandler =
             if (error) {
               winstonLogger.logError(`Failed to send SNS notification: ${error}`);
             } else {
-              winstonLogger.logRequest(`SNS notification was sent for ${data.title}`);
+              winstonLogger.logRequest(`SNS notification was sent for ${data}`);
             }
           })
         }
