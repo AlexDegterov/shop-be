@@ -14,6 +14,22 @@ provider:
     PGDATABASE: ${self:custom.webpack.dotenvVars.PGDATABASE, env:PGDATABASE, ''}
     PGPASSWORD: ${self:custom.webpack.dotenvVars.PGPASSWORD, env:PGPASSWORD, ''}
     PGPORT: ${self:custom.webpack.dotenvVars.PGPORT, env:PGPORT, ''}
+    SQS_QUEUE: ${self:custom.webpack.dotenvVars.SQS_QUEUE, env:SQS_QUEUE, ''}
+    SNS_TOPIC: ${self:custom.webpack.dotenvVars.SNS_TOPIC, env:SNS_TOPIC, ''}
+    SNS_EMAIL: ${self:custom.webpack.dotenvVars.SNS_EMAIL, env:SNS_EMAIL, ''}
+    SNS_ARN: 
+      Ref: createProductTopic
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "sqs:*"
+      Resource:
+        - Fn::GetAtt: [ catalogItemsQueue, Arn ]
+    - Effect: Allow
+      Action: 'sns:*'
+      Resource:
+        Ref: createProductTopic
 
 plugins:
   - serverless-webpack
@@ -53,3 +69,50 @@ functions:
           request:
               schema:
                 application/json: ${file(src/schemas/createProductSchema.json)}
+  catalogBatchProcess:
+    handler: handler.catalogBatchProcess
+    events:
+      - sqs:
+          batchSize: 5
+          arn:
+            Fn::GetAtt:
+              - catalogItemsQueue
+              - Arn
+
+resources:
+  Resources:
+    catalogItemsQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.webpack.dotenvVars.SQS_QUEUE}
+    
+    createProductTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:custom.webpack.dotenvVars.SNS_TOPIC}
+    
+    SNSSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: ${self:custom.webpack.dotenvVars.SNS_EMAIL}
+        Protocol: email
+        TopicArn:
+          Ref: createProductTopic
+
+    # createProductTopicSubscription:
+    #   Type: AWS::SNS::Subscription
+    #   Properties:
+    #     Endpoint: some-test-email@gmail.com
+    #     Protocol: email
+    #     FilterPolicy:
+    #       title:
+    #         - "BMW 4-series"
+    #     TopicArn:
+    #       Ref: createProductTopic
+
+  Outputs:
+    SQSURL:
+      Value: 
+        "Ref": catalogItemsQueue
+      Export:
+        Name: catalogItemsQueue-${opt:stage, 'dev'}

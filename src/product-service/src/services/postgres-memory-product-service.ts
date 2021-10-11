@@ -4,6 +4,7 @@ import { Client, QueryConfig } from 'pg';
 class PostgresProductService implements ProductServiceInterface {
 
     private tableName = 'products';
+    private tableNameStocks = 'stocks';
 
     constructor(private databaseClient: Client){}
 
@@ -28,11 +29,19 @@ class PostgresProductService implements ProductServiceInterface {
     }
 
     async create(product: Pick<ProductInterface, 'title' | 'description' | 'price' | 'logo' | 'count'>) {
+        let { title, description, price, logo, count } = product;
         const query = {
-            text: `INSERT INTO ${this.tableName}(title, description, price, logo, count) VALUES($1, $2, $3, $4, $5) RETURNING *`,
-            values: [product.title, product.description, product.price, product.logo, product.count],
+            text: `INSERT INTO ${this.tableName}(title, description, price, logo) VALUES($1, $2, $3, $4) RETURNING *`,
+            values: [title, description, price, logo],
         };
         const result = await this.databaseClient.query(query);
+        if (result.rows[0]){
+            const query2 = {
+                text: `INSERT INTO ${this.tableNameStocks}(product_id, count) VALUES($1, $2) RETURNING *`,
+                values: [result.rows[0]['id'], count],
+            };
+            await this.databaseClient.query(query2);
+        }
         return result.rows[0] ? result.rows[0] : null;
     }
 }

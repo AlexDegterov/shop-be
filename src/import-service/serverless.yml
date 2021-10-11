@@ -9,6 +9,7 @@ provider:
   region: eu-west-1
   environment:
     BUCKET: ${self:custom.webpack.dotenvVars.BUCKET, env:BUCKET, ''}
+    SQSURL: ${cf:product-service-dev.SQSURL} 
 
   iamRoleStatements:
     - Effect: "Allow"
@@ -20,6 +21,10 @@ provider:
         - "s3:*"
       Resource:
         - "arn:aws:s3:::aws-shop-files/*"
+    - Effect: Allow
+      Action: sqs:*
+      Resource:
+        - "*"
 
 plugins:
   - serverless-webpack
