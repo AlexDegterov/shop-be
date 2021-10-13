@@ -1,0 +1,18 @@
+service: authorization-service
+frameworkVersion: '2'
+
+plugins:
+  - serverless-webpack
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, 'dev'}
+  region: eu-west-1
+  environment:
+    NAME: ${self:custom.webpack.dotenvVars.NAME, env:NAME, ''}
+    PASSWORD: ${self:custom.webpack.dotenvVars.PASSWORD, env:PASSWORD, ''}
+
+functions:
+  basicAuthorizer:
+    handler: handler.basicAuthorizer
