@@ -11,7 +11,7 @@ class PostgresProductService implements ProductServiceInterface {
     async getProductById(id: string): Promise<ProductInterface> {
 
         const query = {
-            text: `SELECT * FROM ${this.tableName} WHERE id = $1`,
+            text: `SELECT * FROM ${this.tableName} AS p LEFT JOIN ${this.tableNameStocks} AS s ON (s.product_id = p.id) WHERE id = $1`,
             values: [id],
         } as QueryConfig;
 
@@ -21,7 +21,7 @@ class PostgresProductService implements ProductServiceInterface {
 
     async getProductsList(): Promise<ProductInterface[]> {
         const query = {
-            text: `SELECT * FROM ${this.tableName}`,
+            text: `SELECT * FROM ${this.tableName} AS p LEFT JOIN ${this.tableNameStocks} AS s ON (s.product_id = p.id)`,
         } as QueryConfig;
 
         const result = await this.databaseClient.query(query);
