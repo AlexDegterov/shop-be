@@ -8,7 +8,7 @@ if (process.env.NODE_ENV !== 'production') {
 	require('dotenv').config();
 }
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3011;
 const CART = process.env.CART;
 const PRODUCT = process.env.PRODUCT;
 const AppCache = new NodeCache({ stdTTL: 60 * 2 });
