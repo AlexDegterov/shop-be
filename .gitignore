@@ -12,3 +12,4 @@ src/*/.serverless
 */.webpack
 
 src/*/.env.local
+src/*/.env
